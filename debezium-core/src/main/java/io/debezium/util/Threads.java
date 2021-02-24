@@ -238,6 +238,8 @@ public class Threads {
     }
 
     /**
+     * 创建一个符合Debezium命名的线程工厂
+     *
      * Returns a thread factory that creates threads conforming to Debezium thread naming
      * pattern {@code debezium-<connector class>-<connector-id>-<thread-name>}.
      *
@@ -275,6 +277,7 @@ public class Threads {
 
             @Override
             public Thread newThread(Runnable r) {
+                // 线程池中的线程名称
                 StringBuilder threadName = new StringBuilder(DEBEZIUM_THREAD_NAME_PREFIX)
                         .append(connector.getSimpleName().toLowerCase())
                         .append('-')

@@ -12,6 +12,8 @@ import io.debezium.util.IoUtil;
 /**
  * Information about this module.
  *
+ * 模块信息
+ *
  * @author Jiri Pechanec
  */
 public final class Module {

@@ -51,6 +51,8 @@ public class CdcSourceTaskContext {
     }
 
     /**
+     * 返回一个获取当前时间的时钟
+     *
      * Returns a clock for obtaining the current time.
      */
     public Clock getClock() {

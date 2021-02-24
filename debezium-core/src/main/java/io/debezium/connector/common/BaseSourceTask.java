@@ -30,6 +30,10 @@ import io.debezium.util.ElapsedTimeStrategy;
 import io.debezium.util.Metronome;
 
 /**
+ * SourceTask 是 kafka Connect中的概念, 需要继承这个类，让程序运行起来
+ *
+ * 这个是基础类，提供基础的方法
+ *
  * Base class for Debezium's CDC {@link SourceTask} implementations. Provides functionality common to all connectors,
  * such as validation of the configuration.
  *

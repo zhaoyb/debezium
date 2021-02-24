@@ -54,6 +54,8 @@ import io.debezium.util.Strings;
 import io.debezium.util.Threads;
 
 /**
+ * 执行 mysql 服务器快照，病记录 schema 变更
+ *
  * A component that performs a snapshot of a MySQL server, and records the schema changes in {@link MySqlSchema}.
  *
  * @author Randall Hauch
@@ -69,6 +71,9 @@ public class SnapshotReader extends AbstractReader {
     private final MySqlConnectorConfig.SnapshotLockingMode snapshotLockingMode;
 
     /**
+     *
+     * 创建一个快照读取器
+     *
      * Create a snapshot reader.
      *
      * @param name the name of this reader; may not be null
@@ -79,6 +84,8 @@ public class SnapshotReader extends AbstractReader {
     }
 
     /**
+     * 创建一个全局锁定的快照读取器
+     *
      * Create a snapshot reader that can use global locking only optionally.
      * Used mostly for testing.
      *
@@ -134,7 +141,9 @@ public class SnapshotReader extends AbstractReader {
      */
     @Override
     protected void doStart() {
+        // 创建只有一个线程的线程池
         executorService = Threads.newSingleThreadExecutor(MySqlConnector.class, context.getConnectorConfig().getLogicalName(), "snapshot");
+        // 用线程池中的线程执行
         executorService.execute(this::execute);
     }
 
@@ -248,13 +257,18 @@ public class SnapshotReader extends AbstractReader {
      * Perform the snapshot using the same logic as the "mysqldump" utility.
      */
     protected void execute() {
+        // log上下文
         context.configureLoggingContext("snapshot");
+        // 对象安全的对象引用变量
         final AtomicReference<String> sql = new AtomicReference<>();
+        // 从 MySQL jdbc 连接上下文中 获取连接
         final JdbcConnection mysql = connectionContext.jdbc();
+        // 数据库 schema
         final MySqlSchema schema = context.dbSchema();
         final Filters filters = schema.filters();
         final SourceInfo source = context.source();
         final Clock clock = context.getClock();
+        // 获取时间戳
         final long ts = clock.currentTimeInMillis();
         logger.info("Starting snapshot for {} with user '{}' with locking mode '{}'", connectionContext.connectionString(), mysql.username(),
                 snapshotLockingMode.getValue());

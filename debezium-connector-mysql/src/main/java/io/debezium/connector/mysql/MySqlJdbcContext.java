@@ -32,6 +32,8 @@ import io.debezium.relational.history.DatabaseHistory;
 import io.debezium.util.Strings;
 
 /**
+ * MySQL jdbc连接的上下文
+ *
  * A context for a JDBC connection to MySQL.
  *
  * @author Randall Hauch
