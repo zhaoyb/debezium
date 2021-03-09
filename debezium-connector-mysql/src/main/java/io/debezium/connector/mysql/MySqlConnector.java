@@ -96,6 +96,13 @@ public class MySqlConnector extends SourceConnector {
         this.props = props;
     }
 
+    /**
+     *
+     *  ASK的配置
+     *
+     * @param maxTasks
+     * @return
+     */
     @Override
     public List<Map<String, String>> taskConfigs(int maxTasks) {
         return props == null ? Collections.emptyList() : Collections.singletonList(new HashMap<String, String>(props));

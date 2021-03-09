@@ -83,15 +83,18 @@ public abstract class BaseSourceTask extends SourceTask {
             throw new ConnectException("Unexpected null context");
         }
 
+        // 可重入锁
         stateLock.lock();
 
         try {
+            // 原子操作，将stop 状态 设置为running 状态，如果失败，则表示已经启动
             if (!state.compareAndSet(State.STOPPED, State.RUNNING)) {
                 LOGGER.info("Connector has already been started");
                 return;
             }
 
             this.props = props;
+            // 获取配置
             Configuration config = Configuration.from(props);
             retriableRestartWait = config.getDuration(CommonConnectorConfig.RETRIABLE_RESTART_WAIT, ChronoUnit.MILLIS);
             // need to reset the delay or you only get one delayed restart
@@ -123,6 +126,13 @@ public abstract class BaseSourceTask extends SourceTask {
      */
     protected abstract ChangeEventSourceCoordinator start(Configuration config);
 
+    /**
+     *
+     * 需要发送到kafka的数据。
+     *
+     * @return
+     * @throws InterruptedException
+     */
     @Override
     public final List<SourceRecord> poll() throws InterruptedException {
         boolean started = startIfNeededAndPossible();

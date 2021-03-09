@@ -36,6 +36,9 @@ import io.debezium.util.LoggingContext.PreviousContext;
 /**
  * A Kafka Connect source task reads the MySQL binary log and generate the corresponding data change events.
  *
+ *
+ * kafka connect 中的task实现类
+ *
  * @see MySqlConnector
  * @author Randall Hauch
  */
@@ -61,13 +64,23 @@ public final class MySqlConnectorTask extends BaseSourceTask {
         return Module.version();
     }
 
+    /**
+     * 任务启动, 注意这里是继承基类的，而不是connect的
+     * 
+     * @param config
+     *            the task configuration; implementations should wrap it in a dedicated implementation of
+     * @return
+     */
     @Override
     public ChangeEventSourceCoordinator start(Configuration config) {
+        // 从配置中获取 serverName
         final String serverName = config.getString(MySqlConnectorConfig.SERVER_NAME);
+        // log MDC 上下文
         PreviousContext prevLoggingContext = LoggingContext.forConnector(Module.contextName(), serverName, "task");
 
         try {
             // Get the offsets for our partition ...
+            // 开启快照
             boolean startWithSnapshot = false;
             boolean snapshotEventsAsInserts = config.getBoolean(MySqlConnectorConfig.SNAPSHOT_EVENTS_AS_INSERTS);
             Map<String, String> partition = Collect.hashMapOf(SourceInfo.SERVER_PARTITION_KEY, serverName);
